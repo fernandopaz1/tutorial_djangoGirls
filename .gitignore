@@ -240,5 +240,9 @@ Thumbs.db
 # Ignore all local history of files
 .history
 .ionide
-
+*.pyc
+db.sqlite3
+myvenv
+__pycache__
+local_settings.py
 # End of https://www.toptal.com/developers/gitignore/api/django,python,visualstudiocode

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+import dj_database_url
+
 import environ
 env = environ.Env()
 environ.Env.read_env()
@@ -27,9 +29,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'www.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com]
 
 
 # Application definition
@@ -80,18 +82,14 @@ WSGI_APPLICATION = 'blogDjango.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': env.str('DATABASE_ENGINE'),
-        'NAME': env.str('DATABASE_NAME'),
-        'USER': env.str('DATABASE_USER'),
-        'PASSWORD': env.str('DATABASE_PASSWORD'),
-        'HOST': env.str('DATABASE_HOST'),
-        'PORT': env.str('DATABASE_PORT'),
-        'TEST': {
-            'NAME': env.str('TEST_DATABASE_NAME'),
-        },
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'django_girls',
+        'USER': 'django',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -130,3 +128,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
