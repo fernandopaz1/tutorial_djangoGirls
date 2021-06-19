@@ -27,12 +27,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = 'u-sxz6t0(ca8+x#=0*3vjdhi+jt_dgtzq5=n$&x122_#7397h)'
+# env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com]
+# DEBUG = True
 
 
 # Application definition
@@ -48,6 +47,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -81,16 +82,40 @@ WSGI_APPLICATION = 'blogDjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_girls',
-        'USER': 'django',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
+# print(os.environ.get('.env'))
+if  os.environ.get('DEBUG'):
+    print("Debug is enabled.")
+    DEBUG = True
+    # When not specified, ALLOW_HOSTS defaults to:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+    DATABASES = {
+        'default': {
+            'ENGINE': env.str('DATABASE_ENGINE'),
+            'NAME': env.str('DATABASE_NAME'),
+            'USER': env.str('DATABASE_USER'),
+            'PASSWORD': env.str('DATABASE_PASSWORD'),
+            'HOST': env.str('DATABASE_HOST'),
+            'PORT': env.str('DATABASE_PORT'),
+            'TEST': {
+                'NAME': env.str('TEST_DATABASE_NAME'),
+            },
+        }
     }
-}
+else:
+    DEBUG = False
+    print("Debug is disabled.")
+    ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'django_girls',
+            'USER': 'django',
+            'PASSWORD': 'django',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
