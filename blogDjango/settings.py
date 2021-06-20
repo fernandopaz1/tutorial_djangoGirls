@@ -81,41 +81,51 @@ WSGI_APPLICATION = 'blogDjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# print(os.environ.get('.env'))
-if  os.environ.get('DEBUG'):
-    print("Debug is enabled.")
-    DEBUG = True
-    SECRET_KEY =  env.str('SECRET_KEY')
-    # When not specified, ALLOW_HOSTS defaults to:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
-    DATABASES = {
-        'default': {
-            'ENGINE': env.str('DATABASE_ENGINE'),
-            'NAME': env.str('DATABASE_NAME'),
-            'USER': env.str('DATABASE_USER'),
-            'PASSWORD': env.str('DATABASE_PASSWORD'),
-            'HOST': env.str('DATABASE_HOST'),
-            'PORT': env.str('DATABASE_PORT'),
-            'TEST': {
-                'NAME': env.str('TEST_DATABASE_NAME'),
-            },
-        }
-    }
-else:
-    DEBUG = False
-    SECRET_KEY =  get_random_secret_key()
-    print("Debug is disabled.")
-    ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'django_girls',
-            'USER': 'django',
-            'PASSWORD': 'django',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-        }
-    }
+DEBUG = True
+SECRET_KEY =  get_random_secret_key()
+ALLOWED_HOSTS = ['*']
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABSE_URL')
+    )
+}
+
+# # print(os.environ.get('.env'))
+# if  os.environ.get('DEBUG'):
+#     print("Debug is enabled.")
+#     DEBUG = True
+#     SECRET_KEY =  env.str('SECRET_KEY')
+#     # When not specified, ALLOW_HOSTS defaults to:
+#     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': env.str('DATABASE_ENGINE'),
+#             'NAME': env.str('DATABASE_NAME'),
+#             'USER': env.str('DATABASE_USER'),
+#             'PASSWORD': env.str('DATABASE_PASSWORD'),
+#             'HOST': env.str('DATABASE_HOST'),
+#             'PORT': env.str('DATABASE_PORT'),
+#             'TEST': {
+#                 'NAME': env.str('TEST_DATABASE_NAME'),
+#             },
+#         }
+#     }
+# else:
+#     DEBUG = False
+#     SECRET_KEY =  get_random_secret_key()
+#     print("Debug is disabled.")
+#     ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'django_girls',
+#             'USER': 'django',
+#             'PASSWORD': 'django',
+#             'HOST': '127.0.0.1',
+#             'PORT': '5432',
+#         }
+#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -153,10 +163,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+STATIC_FILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
